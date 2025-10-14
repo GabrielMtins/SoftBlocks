@@ -29,9 +29,12 @@ static void run_args(int argc, char **argv) {
  */
 int main(int argc, char **argv) {
 	uint32_t start_tick;
+	float fps = 60.0f;
+	uint32_t next_tick_fps;
 	float dt = 0.00f;;
-	//srand(time(NULL));
-	srand(172);
+	srand(time(NULL));
+	//srand(0);
+	//srand(172);
 
 	run_args(argc, argv);
 
@@ -42,6 +45,7 @@ int main(int argc, char **argv) {
 	Raytracer *raytracer = new Raytracer();
 	Player player;
 	uint32_t first_tick = SDL_GetTicks();
+	next_tick_fps = 0;
 
 	while(context.isRunning()) {
 		start_tick = SDL_GetTicks();
@@ -62,9 +66,14 @@ int main(int argc, char **argv) {
 
 		/* Renderizar na tela */
 		raytracer->processScreen();
-		context.updateWindowSurface(raytracer->getScreen().getSurface(), 1.0f / dt);
+		context.updateWindowSurface(raytracer->getScreen().getSurface(), fps);
 
 		dt = (float) (SDL_GetTicks() - start_tick) / 1000;
+
+		if(start_tick > next_tick_fps) {
+			fps = 1.0f / dt;
+			next_tick_fps = start_tick + 100;
+		}
 		
 		counter++;
 	}
