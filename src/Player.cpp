@@ -153,6 +153,10 @@ void Player::applyMovement(const World& world, float dt) {
 	if(checkCollision(world)) {
 		position.z -= delta.z;
 	}
+
+	if(checkCollision(world)) {
+		position.y += 1.0f;
+	}
 } 
 
 Vec3 Player::getCenter(void) const {
