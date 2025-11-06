@@ -42,7 +42,7 @@ void Raytracer::processScreen(void) {
 			SCREEN_HEIGHT / 2
 			);
 
-	#pragma omp parallel for collapse(2) private(i) schedule(dynamic) 
+	#pragma omp parallel for collapse(2) private(i) schedule(dynamic, 64) 
 	for(j = 0; j < SCREEN_HEIGHT; j++) {
 		for(i = 0; i < SCREEN_WIDTH; i++) {
 			processPixel(i, j);

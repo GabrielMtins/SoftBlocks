@@ -47,3 +47,26 @@ botão direito do mouse - remover bloco
 botão esquerdo do mouse - colocar bloco
 1-9 - escolher bloco
 ```
+
+# Funcionamento
+
+O software funciona com base no algoritmo de raytracing: para cada pixel da
+cena, um raio é disparado da câmera para a cena. Esse raio procura a primeira
+intersecção com o mapa, neste caso, o mapa em cubos (voxels) do jogo. Como cada
+raio disparado é responsável individualmente pelos cálculos da intersecção e
+também o cálculo da cor do pixel, é possível paralelizar esse processo
+utilizando o OpenMP. 
+
+Alguns pixels demorarão mais tempo para computar do que outros, por isso, utilizei
+o schedule *dynamic*, já que utilizar o estático levaria a uma perda de performance.
+A função `Raytracer::processPixel` é a função responsável por processar a cor
+e as intersecções de cada pixel, ou seja, ela que é paralelizada. No código:
+
+```
+	#pragma omp parallel for collapse(2) private(i) schedule(dynamic, 64) 
+	for(j = 0; j < SCREEN_HEIGHT; j++) {
+		for(i = 0; i < SCREEN_WIDTH; i++) {
+			processPixel(i, j);
+		}
+	}
+```
